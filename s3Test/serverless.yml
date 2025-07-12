@@ -1,0 +1,87 @@
+service: AWSS3
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  
+plugins:
+  - serverless-dotenv-plugin
+  # - serverless-offline
+
+# layers:
+#   AwsS3:
+#     path: layer
+#     compatibleRuntimes:
+#       - nodejs18.x
+#     description: Node.js 18.x modules layer from serverless yml code
+
+package:
+  exclude:
+    - layer/nodejs/node18/node_modules/**
+    - node_modules/**  
+
+functions:
+  awsS3-s3Operation:
+    handler: index.s3Operation
+    layers:
+      # - { Ref: AwsS3LambdaLayer }
+      - ${env:LAMBDA_LAYER_ARN}
+    events:
+      - httpApi:
+          path: /s3Operation
+          method: post
+  awsS3-startMultipartUpload:
+    handler: index.startMultipartUpload
+    layers:
+      # - { Ref: AwsS3LambdaLayer }
+      - ${env:LAMBDA_LAYER_ARN}
+    events:
+      - httpApi:
+          path: /startMultipartUpload
+          method: post
+  awsS3-completeMultipartUpload:
+    handler: index.completeMultipartUpload
+    layers:
+      # - { Ref: AwsS3LambdaLayer }
+      - ${env:LAMBDA_LAYER_ARN}
+    events:
+      - httpApi:
+          path: /completeMultipartUpload
+          method: post
+  awsS3-listMultipartUpload:
+    handler: index.listMultipartUpload
+    layers:
+      # - { Ref: AwsS3LambdaLayer }
+      - ${env:LAMBDA_LAYER_ARN}
+    events:
+      - httpApi:
+          path: /listMultipartUpload
+          method: get
+  awsS3-listPartUpload:
+    handler: index.listPartUpload
+    layers:
+      # - { Ref: AwsS3LambdaLayer }
+      - ${env:LAMBDA_LAYER_ARN}
+    events:
+      - httpApi:
+          path: /listPartUpload
+          method: post
+  awsS3-abortMultipartUpload:
+    handler: index.abortMultipartUpload
+    layers:
+      # - { Ref: AwsS3LambdaLayer }
+      - ${env:LAMBDA_LAYER_ARN}
+    events:
+      - httpApi:
+          path: /abortMultipartUpload
+          method: post 
+  awsS3-abortAllMultipartUpload:
+    handler: index.abortAllMultipartUpload
+    layers:
+      # - { Ref: AwsS3LambdaLayer }
+      - ${env:LAMBDA_LAYER_ARN}
+    events:
+      - httpApi:
+          path: /abortAllMultipartUpload
+          method: get
